@@ -25,9 +25,6 @@ def calculate_loss(model, X, y):
     a1 = np.tanh(z1)
     z2 = a1.dot(W2) + b2
     exp_scores = np.exp(z2)
-
-    # print(len(exp_scores))
-
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
     # Calculating the loss
@@ -35,46 +32,20 @@ def calculate_loss(model, X, y):
     data_loss = np.sum(correct_logprobs)
 
     # Add regulation term to loss (optional)
-    data_loss += Parameters.regulation_strength / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
+    data_loss += Parameters.regularization_strength / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
     return 1.0 / Parameters.number_of_examples * data_loss
-
-    # predicted_labels = np.argmax(probs, axis=1)
-    #
-    # counters = Counter(Parameters.classes)
-    # accuracy = {}
-    # for i in range(0, len(predicted_labels)):
-    #     if predicted_labels[i] == Parameters.classes[i]:
-    #         if Parameters.classes[i] in accuracy:
-    #             accuracy[Parameters.classes[i]] = accuracy[Parameters.classes[i]] + 1
-    #         else:
-    #             accuracy[Parameters.classes[i]] = 1
-    #     else:
-    #         if Parameters.classes[i] in accuracy:
-    #             pass
-    #         else:
-    #             accuracy[Parameters.classes[i]] = 0
-    #
-    # # Calculating the loss
-    # for i in range(0, len(accuracy)):
-    #     if i in accuracy:
-    #         accuracy[i] = accuracy[i] / counters[i]
-    #
-    # print(accuracy)
-    # return accuracy
 
 # This function learns parameters for the neural network and returns the model.
 # - number_of_nodes: Number of nodes in the hidden layer
 # - epochs: Number of passes through the training data for gradient descent
 # - print_loss: If True, print the loss every 1000 iterations
 def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
-    # Initialize the parameters to random values. We need to learn these.
     np.random.seed(0)
     W1 = np.random.randn(Parameters.input_layer_dimension, number_of_nodes) / np.sqrt(Parameters.input_layer_dimension)
     b1 = np.zeros((1, number_of_nodes))
     W2 = np.random.randn(number_of_nodes, Parameters.output_layer_dimension) / np.sqrt(number_of_nodes)
     b2 = np.zeros((1, Parameters.output_layer_dimension))
 
-    # This is what we return at the end
     model = {}
 
     # Gradient descent. For each batch...
@@ -95,24 +66,22 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         dW1 = np.dot(X.T, delta2)
         db1 = np.sum(delta2, axis=0)
 
-        # Add regularization terms (b1 and b2 don't have regularization terms)
-        dW2 += Parameters.regulation_strength * W2
-        dW1 += Parameters.regulation_strength * W1
+        # Add regularization
+        dW2 += Parameters.regularization_strength * W2
+        dW1 += Parameters.regularization_strength * W1
 
-        # Gradient descent parameter update
+        # Update gradient descent parameters
         W1 += -Parameters.learning_rate * dW1
         b1 += -Parameters.learning_rate * db1
         W2 += -Parameters.learning_rate * dW2
         b2 += -Parameters.learning_rate * db2
 
-        # Assign new parameters to the model
+        # Update model
         model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2}
 
-        # Optionally print the loss.
-        # This is expensive because it uses the whole dataset, so we don't want to do it too often.
         if print_loss and i % 1000 == 0:
           print("Loss after iteration %i: %f" %(i, calculate_loss(model, X, y)))
-    # calculate_loss(model, X, y)
+
     return model
 
 # Helper function to predict an output (0 or 1)
@@ -182,14 +151,13 @@ def main():
 class Parameters:
     coordinates, classes = read_dataset()
     number_of_examples = int(len(coordinates) * 0.5)
-    # number_of_examples = len(coordinates)
 
     input_layer_dimension = 2
     output_layer_dimension = 2
 
-    # Gradient descent parameters
+    # Hyperparameters
     learning_rate = 0.01
-    regulation_strength = 0.01
+    regularization_strength = 0.01
 
 if __name__ == "__main__":
     main()
