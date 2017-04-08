@@ -16,8 +16,8 @@ def read_dataset():
                 classes.append(int(row[2]))
     return (np.array(coordinates), np.array(classes))
 
-# Helper function to evaluate the total loss on the dataset
-def calculate_loss(model, X, y):
+# Helper function to evaluate the total error on the dataset
+def calculate_error(model, X, y):
     W1, b1, W2, b2 = model['W1'], model['b1'], model['W2'], model['b2']
 
     # Forward propagation to calculate our predictions
@@ -80,7 +80,7 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2}
 
         if print_loss and i % 1000 == 0:
-          print("Loss after iteration %i: %f" %(i, calculate_loss(model, X, y)))
+          print("Loss after iteration %i: %f" %(i, calculate_error(model, X, y)))
 
     return model
 
