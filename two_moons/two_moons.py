@@ -1,6 +1,5 @@
-# HOW MANY ITERATIONS CAN WE USE???
-
 import csv
+from collections import Counter
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -26,15 +25,42 @@ def calculate_loss(model, X, y):
     a1 = np.tanh(z1)
     z2 = a1.dot(W2) + b2
     exp_scores = np.exp(z2)
+
+    # print(len(exp_scores))
+
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
     # Calculating the loss
     correct_logprobs = -np.log(probs[range(Parameters.number_of_examples), y])
     data_loss = np.sum(correct_logprobs)
 
-    # Add regulatization term to loss (optional)
-    data_loss += Parameters.regulation_strength/2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
+    # Add regulation term to loss (optional)
+    data_loss += Parameters.regulation_strength / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
     return 1.0 / Parameters.number_of_examples * data_loss
+
+    # predicted_labels = np.argmax(probs, axis=1)
+    #
+    # counters = Counter(Parameters.classes)
+    # accuracy = {}
+    # for i in range(0, len(predicted_labels)):
+    #     if predicted_labels[i] == Parameters.classes[i]:
+    #         if Parameters.classes[i] in accuracy:
+    #             accuracy[Parameters.classes[i]] = accuracy[Parameters.classes[i]] + 1
+    #         else:
+    #             accuracy[Parameters.classes[i]] = 1
+    #     else:
+    #         if Parameters.classes[i] in accuracy:
+    #             pass
+    #         else:
+    #             accuracy[Parameters.classes[i]] = 0
+    #
+    # # Calculating the loss
+    # for i in range(0, len(accuracy)):
+    #     if i in accuracy:
+    #         accuracy[i] = accuracy[i] / counters[i]
+    #
+    # print(accuracy)
+    # return accuracy
 
 # This function learns parameters for the neural network and returns the model.
 # - number_of_nodes: Number of nodes in the hidden layer
@@ -86,7 +112,7 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         # This is expensive because it uses the whole dataset, so we don't want to do it too often.
         if print_loss and i % 1000 == 0:
           print("Loss after iteration %i: %f" %(i, calculate_loss(model, X, y)))
-
+    # calculate_loss(model, X, y)
     return model
 
 # Helper function to predict an output (0 or 1)
@@ -99,6 +125,18 @@ def predict(model, x):
     exp_scores = np.exp(z2)
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
     return np.argmax(probs, axis=1)
+
+def count_mismatches(predicted_labels, actual_labels):
+    diffs = { 'false_0': 0, 'false_1': 0 }
+    for i in range(0, len(predicted_labels)):
+        if predicted_labels[i] == actual_labels[i]:
+            pass
+        else:
+            if predicted_labels[i] == 0:
+                diffs['false_0'] = diffs['false_0'] + 1
+            else:
+                diffs['false_1'] = diffs['false_1'] + 1
+    return diffs
 
 def visualize(X, y, model):
     plot_decision_boundary(lambda x:predict(model,x), X, y)
@@ -120,12 +158,31 @@ def plot_decision_boundary(pred_func, X, y):
     plt.show()
 
 def main():
-    model = train_neural_network(Parameters.coordinates, Parameters.classes, 3, print_loss=True)
+    print("Training model...")
+    model = train_neural_network(
+        Parameters.coordinates[:100,:],
+        Parameters.classes[:100], 3, print_loss=True)
+
+    print("")
+    print("Validating...")
+    validation_results = predict(model, Parameters.coordinates[100:40,:])
+    validation_count = count_mismatches(validation_results, Parameters.classes[100:40])
+    print(validation_count)
+
+    print("")
+    print("Testing...")
+    test_results = predict(model, Parameters.coordinates[140:,:])
+    test_count = count_mismatches(test_results, Parameters.classes[140:])
+    print(test_count)
+
+    print("")
+    print("Visualizing...")
     visualize(Parameters.coordinates, Parameters.classes, model)
 
 class Parameters:
     coordinates, classes = read_dataset()
-    number_of_examples = len(coordinates)
+    number_of_examples = int(len(coordinates) * 0.5)
+    # number_of_examples = len(coordinates)
 
     input_layer_dimension = 2
     output_layer_dimension = 2
