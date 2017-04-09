@@ -16,22 +16,21 @@ def read_dataset():
                 classes.append(int(row[2]))
     return (np.array(coordinates), np.array(classes))
 
-# Helper function to evaluate the total error on the dataset
 def calculate_error(model, X, y):
     W1, b1, W2, b2 = model['W1'], model['b1'], model['W2'], model['b2']
 
-    # Forward propagation to calculate our predictions
+    # Forward propagation
     z1 = X.dot(W1) + b1
     a1 = np.tanh(z1)
     z2 = a1.dot(W2) + b2
     exp_scores = np.exp(z2)
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
-    # Calculating the loss
+    # Calculate the error
     correct_logprobs = -np.log(probs[range(Parameters.number_of_examples), y])
     data_loss = np.sum(correct_logprobs)
 
-    # Add regulation term to loss (optional)
+    # Add regularization term
     data_loss += Parameters.regularization_strength / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
     return 1.0 / Parameters.number_of_examples * data_loss
 
@@ -40,17 +39,18 @@ def calculate_error(model, X, y):
 # - epochs: Number of passes through the training data for gradient descent
 # - print_loss: If True, print the loss every 1000 iterations
 def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
+    model = {}
+
+    # Initialize waits to random numbers
     np.random.seed(0)
     W1 = np.random.randn(Parameters.input_layer_dimension, number_of_nodes) / np.sqrt(Parameters.input_layer_dimension)
     b1 = np.zeros((1, number_of_nodes))
     W2 = np.random.randn(number_of_nodes, Parameters.output_layer_dimension) / np.sqrt(number_of_nodes)
     b2 = np.zeros((1, Parameters.output_layer_dimension))
 
-    model = {}
-
     # Gradient descent. For each batch...
     for i in range(0, epochs):
-        # Forward propagation
+        # Forwardpropagation
         z1 = X.dot(W1) + b1
         a1 = np.tanh(z1)
         z2 = a1.dot(W2) + b2
@@ -66,7 +66,7 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         dW1 = np.dot(X.T, delta2)
         db1 = np.sum(delta2, axis=0)
 
-        # Add regularization
+        # Add regularization term
         dW2 += Parameters.regularization_strength * W2
         dW1 += Parameters.regularization_strength * W1
 
@@ -77,7 +77,7 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         b2 += -Parameters.learning_rate * db2
 
         # Update model
-        model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2}
+        model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
 
         if print_loss and i % 1000 == 0:
           print("Loss after iteration %i: %f" %(i, calculate_error(model, X, y)))
@@ -85,10 +85,10 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
     return model
 
 # Helper function to predict an output (0 or 1)
-def predict(model, x):
+def predict(model, X):
     W1, b1, W2, b2 = model['W1'], model['b1'], model['W2'], model['b2']
     # Forward propagation
-    z1 = x.dot(W1) + b1
+    z1 = X.dot(W1) + b1
     a1 = np.tanh(z1)
     z2 = a1.dot(W2) + b2
     exp_scores = np.exp(z2)
