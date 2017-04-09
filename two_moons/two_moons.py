@@ -39,13 +39,14 @@ def calculate_error(model, X, y):
 # - epochs: Number of passes through the training data for gradient descent
 # - print_loss: If True, print the loss every 1000 iterations
 def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
-    model = {}
     # Initialize weights to random numbers
-    np.random.seed(0)
+    np.random.seed
     W1 = np.random.randn(Parameters.input_layer_dimension, number_of_nodes) / np.sqrt(Parameters.input_layer_dimension)
     b1 = np.zeros((1, number_of_nodes))
     W2 = np.random.randn(number_of_nodes, Parameters.output_layer_dimension) / np.sqrt(number_of_nodes)
     b2 = np.zeros((1, Parameters.output_layer_dimension))
+
+    model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
 
     # Gradient descent. For each batch...
     for i in range(0, epochs):
@@ -78,8 +79,12 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         # Update model
         model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
 
-        if print_loss and i % 1000 == 0:
-          print("Loss after iteration %i: %f" %(i, calculate_error(model, X, y)))
+        if print_loss and ((i % 1000 == 0) or (i == 0)):
+            print("Loss after iteration %i: %f" %(i, calculate_error(model, X, y)))
+            print("Validating...")
+            validation_results = predict(model, Parameters.coordinates[100:140,:])
+            validation_count = count_mismatches(validation_results, Parameters.classes[100:140])
+            print(validation_count)
 
     return model
 
@@ -97,13 +102,11 @@ def predict(model, X):
 def count_mismatches(predicted_labels, actual_labels):
     diffs = { 'false_0': 0, 'false_1': 0 }
     for i in range(0, len(predicted_labels)):
-        if predicted_labels[i] == actual_labels[i]:
-            pass
-        else:
+        if predicted_labels[i] != actual_labels[i]:
             if predicted_labels[i] == 0:
-                diffs['false_0'] = diffs['false_0'] + 1
-            else:
-                diffs['false_1'] = diffs['false_1'] + 1
+                diffs['false_0'] += 1
+            elif predicted_labels[i] == 1:
+                diffs['false_1'] += 1
     return diffs
 
 def visualize(X, y, model):
@@ -130,12 +133,6 @@ def main():
     model = train_neural_network(
         Parameters.coordinates[:100,:],
         Parameters.classes[:100], 3, print_loss=True)
-
-    print("")
-    print("Validating...")
-    validation_results = predict(model, Parameters.coordinates[100:40,:])
-    validation_count = count_mismatches(validation_results, Parameters.classes[100:40])
-    print(validation_count)
 
     print("")
     print("Testing...")
