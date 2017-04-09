@@ -12,48 +12,30 @@ class TwoLayerNeuralNet(object):
         self.model['W2'] = np.random.randn(number_of_hidden, number_of_outputs) / np.sqrt(number_of_hidden)
         self.model['b2'] = np.zeros((1, number_of_outputs))
 
-    def calculate_probabilities(self, X, y):
-        W1, b1, W2, b2 = self.model['W1'], self.model['b1'], self.model['W2'], self.model['b2']
-
-        # Forwardpropagation
-        z1 = X.dot(W1) + b1
-        a1 = np.maximum(0, z1) # Use ReLU as activation function
-        scores = a1.dot(W2) + b2
-
-        # Compute and return the class probabilities
-        exp_scores = np.exp(scores)
-        probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
-        return probs, a1
-
     def calculate_error(self, X, y, probs, regularization_strength):
         W1, b1, W2, b2 = self.model['W1'], self.model['b1'], self.model['W2'], self.model['b2']
+        number_of_examples = X.shape[0]
 
         # Calculate the error
-        correct_logprobs = -np.log(probs[range(X.shape[0]), y])
+        correct_logprobs = -np.log(probs[range(number_of_examples), y])
         data_loss = np.sum(correct_logprobs)
 
         # Add regularization term
         data_loss += regularization_strength / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
-        # if math.isnan(1.0 / X.shape[0] * data_loss):
-        #     print(np.square(W1))
-        #     print(np.square(W2))
-        #     print(np.sum(correct_logprobs))
-        #     print(data_loss)
-        #     sys.exit()
-        return 1.0 / X.shape[0] * data_loss
+        return 1.0 / number_of_examples * data_loss
 
     # Train this neural network using stochastic gradient descent
     def train(self, X, y, X_val, y_val,
-              learning_rate=0.001, learning_rate_decay=0.95,
-              regularization_strength=0.00001, iterations=100,
-              batch_size=200, print_loss=False):
+              learning_rate, learning_rate_decay,
+              regularization_strength, iterations,
+              batch_size, print_loss=False):
         num_train = X.shape[0]
         iterations_per_epoch = max(num_train / batch_size, 1)
 
-        # Use SGD to optimize the parameters in self.model
+        # Use Stochastic Gradient Descent to optimize the parameters in self.model
         loss_history = []
-        train_acc_history = []
-        val_acc_history = []
+        training_history = []
+        validation_history = []
 
         for i in range(iterations):
             # Get a random batch
@@ -62,10 +44,16 @@ class TwoLayerNeuralNet(object):
             y_batch = y[sample_indices]
 
             W1, b1, W2, b2 = self.model['W1'], self.model['b1'], self.model['W2'], self.model['b2']
+            number_of_examples = X.shape[0]
 
             # Forwardpropagation
-            probs, a1 = self.calculate_probabilities(X, y)
-            print(a1)
+            z1 = X.dot(W1) + b1
+            a1 = np.maximum(0, z1) # Use ReLU as activation function
+            scores = a1.dot(W2) + b2
+
+            # Compute and return the class probabilities
+            exp_scores = np.exp(scores)
+            probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
             # Compute and save the loss
             error = self.calculate_error(X, y, probs, regularization_strength)
@@ -73,7 +61,7 @@ class TwoLayerNeuralNet(object):
 
             # Backpropagation
             delta3 = probs
-            delta3[range(X.shape[0]), y] -= 1
+            delta3[range(number_of_examples), y] -= 1
 
             dW2 = (a1.T).dot(delta3)
             db2 = np.sum(delta3, axis=0, keepdims=True)
@@ -95,23 +83,23 @@ class TwoLayerNeuralNet(object):
             self.model['b2'] += -learning_rate * db2
 
             # Print current loss
-            if print_loss and i % 10 == 0:
+            if print_loss and i % 100 == 0:
                 print("Loss after iteration %i / %i: %f" %(i, iterations, error))
 
             # Every epoch, check training and validation accuracy and decay learning rate
             if i % iterations_per_epoch == 0:
                 # Check accuracy
-                train_acc = (self.predict(X_batch) == y_batch).mean()
-                val_acc = (self.predict(X_val) == y_val).mean()
-                train_acc_history.append(train_acc)
-                val_acc_history.append(val_acc)
+                training_accuracy = (self.predict(X_batch) == y_batch).mean()
+                validation_accuracy = (self.predict(X_val) == y_val).mean()
+                training_history.append(training_accuracy)
+                validation_history.append(validation_accuracy)
                 # Decay learning rate
                 learning_rate *= learning_rate_decay
 
         return {
             'loss_history': loss_history,
-            'train_acc_history': train_acc_history,
-            'val_acc_history': val_acc_history,
+            'training_history': training_history,
+            'validation_history': validation_history,
         }
 
     # Predict an output based on current model

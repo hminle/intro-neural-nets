@@ -1,6 +1,5 @@
 from utils import read_and_prepare_images
-from neural_net import TwoLayerNeuralNet
-# from neural_net1 import TwoLayerNet
+from neural_net2 import TwoLayerNeuralNet
 
 # Read input images
 print("Reading input data...")
@@ -22,15 +21,12 @@ net = TwoLayerNeuralNet(image_size, neurons_per_layer, output_classes)
 print("")
 print("Training...")
 stats = net.train(training_data, training_labels, validation_data, validation_labels,
-            learning_rate=0.0001, learning_rate_decay=0.95,
-            regularization_strength=0.00001, iterations=100,
-            batch_size=200, print_loss=True)
-
-# stats = net.train(training_data, training_labels, validation_data, validation_labels,
-#             num_iters=1000, batch_size=200,
-#             learning_rate=1e-4, learning_rate_decay=0.95,
-#             reg=0.5, verbose=True)
+            iterations=1000, batch_size=200,
+            learning_rate=0.000000001, learning_rate_decay=0.95,
+            regularization_strength=0.00001, print_loss=True)
 
 # Predict on the validation set
+print("")
+print("Validating...")
 validation_accuracy = (net.predict(validation_data) == validation_labels).mean()
 print("Validation accuracy: ", validation_accuracy)
