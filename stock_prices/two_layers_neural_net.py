@@ -34,7 +34,7 @@ class TwoLayersNeuralNets():
             delta3 = output - y
             dW2 = (a1.T).dot(delta3)
             db2 = np.sum(delta3, axis=0, keepdims=True)
-            delta2 = delta3.dot(self.W2.T) * (1 - np.power(a1, 2))*mean
+            delta2 = delta3.dot(self.W2.T) * (1 - np.power(a1, 2)) * mean # Derivative of "tanh"
             dW1 = np.dot(X.T, delta2)
             db1 = np.sum(delta2, axis=0)
 

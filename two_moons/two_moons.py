@@ -22,8 +22,8 @@ def calculate_error(model, X, y):
     # Forward propagation
     z1 = X.dot(W1) + b1
     a1 = np.tanh(z1)
-    z2 = a1.dot(W2) + b2
-    exp_scores = np.exp(z2)
+    scores = a1.dot(W2) + b2
+    exp_scores = np.exp(scores)
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
     # Calculate the error
@@ -52,8 +52,8 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         # Forwardpropagation
         z1 = X.dot(W1) + b1
         a1 = np.tanh(z1)
-        z2 = a1.dot(W2) + b2
-        exp_scores = np.exp(z2)
+        scores = a1.dot(W2) + b2
+        exp_scores = np.exp(scores)
         probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
         # Backpropagation
@@ -61,7 +61,7 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         delta3[range(Parameters.number_of_examples), y] -= 1
         dW2 = (a1.T).dot(delta3)
         db2 = np.sum(delta3, axis=0, keepdims=True)
-        delta2 = delta3.dot(W2.T) * (1 - np.power(a1, 2))
+        delta2 = delta3.dot(W2.T) * (1 - np.power(a1, 2)) # Derivative of "tanh"
         dW1 = np.dot(X.T, delta2)
         db1 = np.sum(delta2, axis=0)
 
@@ -89,8 +89,8 @@ def predict(model, X):
     # Forward propagation
     z1 = X.dot(W1) + b1
     a1 = np.tanh(z1)
-    z2 = a1.dot(W2) + b2
-    exp_scores = np.exp(z2)
+    scores = a1.dot(W2) + b2
+    exp_scores = np.exp(scores)
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
     return np.argmax(probs, axis=1)
 
