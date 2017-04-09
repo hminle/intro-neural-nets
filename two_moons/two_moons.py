@@ -40,8 +40,7 @@ def calculate_error(model, X, y):
 # - print_loss: If True, print the loss every 1000 iterations
 def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
     model = {}
-
-    # Initialize waits to random numbers
+    # Initialize weights to random numbers
     np.random.seed(0)
     W1 = np.random.randn(Parameters.input_layer_dimension, number_of_nodes) / np.sqrt(Parameters.input_layer_dimension)
     b1 = np.zeros((1, number_of_nodes))
