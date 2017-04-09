@@ -111,7 +111,6 @@ def count_mismatches(predicted_labels, actual_labels):
 
 def visualize(X, y, model):
     plot_decision_boundary(lambda x:predict(model,x), X, y)
-    plt.title("Logistic Regression")
 
 def plot_decision_boundary(pred_func, X, y):
     # Set min and max values and give it some padding
