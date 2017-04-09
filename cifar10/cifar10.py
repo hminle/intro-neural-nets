@@ -1,5 +1,5 @@
 from utils import read_and_prepare_images
-from neural_net2 import TwoLayerNeuralNet
+from neural_net import TwoLayerNeuralNet
 
 # Read input images
 print("Reading input data...")
