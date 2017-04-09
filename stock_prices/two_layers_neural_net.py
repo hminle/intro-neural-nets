@@ -1,7 +1,6 @@
 import numpy as np
-from sklearn.metrics import mean_squared_error
 
-class TwoLayersNeuralNets():
+class TwoLayersNeuralNet():
     def __init__(self, input_layer_dimension, output_layer_dimension, number_of_nodes, seed_num=7):
         # Initialize the parameters
         np.random.seed(seed_num)
@@ -50,6 +49,9 @@ class TwoLayersNeuralNets():
             loss = self.calculate_error(output, y, regularization_strength)
             self.loss.append(loss)
             print("RMSError after iteration %i: %f" %(i, loss))
+
+    def mean_squared_error(predicted, actual):
+        return np.average((actual - predicted) ** 2, axis=0)
 
     def calculate_error(self, X, y):
         output = X
