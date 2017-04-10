@@ -48,7 +48,10 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
     b2 = np.zeros((1, Parameters.output_layer_dimension))
 
     model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
-    result = { 'best_model': model, 'last_validation_loss': 10, 'best_iterations': 0 }
+    result = {
+        'best_model': model, 'last_validation_loss': 10, 'best_iterations': 0,
+        'training_loss': [], 'validation_loss': []
+    }
 
     # Gradient descent. For each batch...
     for i in range(0, epochs):
@@ -81,14 +84,19 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         # Update model
         model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
 
+        loss = calculate_error(model, X, y)
+        validation_loss = calculate_error(model, Parameters.coordinates[100:140,:], Parameters.classes[100:140])
+
+        result['training_loss'].append(loss)
+        result['validation_loss'].append(validation_loss)
+
+        if validation_loss < result['last_validation_loss']:
+            result['best_model'] = model
+            result['last_validation_loss'] = validation_loss
+            result['best_iterations'] = i
+
         if print_loss and i % 100 == 0:
-            loss = calculate_error(model, X, y)
-            validation_loss = calculate_error(model, Parameters.coordinates[100:140,:], Parameters.classes[100:140])
             print("Loss after iteration %i: %f. Validation loss: %f" %(i, loss, validation_loss))
-            if validation_loss < result['last_validation_loss']:
-                result['best_model'] = model
-                result['last_validation_loss'] = validation_loss
-                result['best_iterations'] = i
 
     return result
 
@@ -113,8 +121,9 @@ def count_mismatches(predicted_labels, actual_labels):
                 diffs['false_1'] += 1
     return diffs
 
-def visualize(X, y, model):
-    plot_decision_boundary(lambda x:predict(model,x), X, y)
+def visualize(X, y, stats):
+    plot_decision_boundary(lambda x:predict(stats['best_model'],x), X, y)
+    plot_loss(stats)
 
 def plot_decision_boundary(pred_func, X, y):
     # Set min and max values and give it some padding
@@ -129,6 +138,15 @@ def plot_decision_boundary(pred_func, X, y):
     # Plot the coordinate system and the data
     plt.contourf(xx, yy, Z, cmap=plt.cm.Spectral)
     plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)
+    plt.show()
+
+def plot_loss(stats):
+    plt.title('Loss History')
+    plt.ylabel('Loss')
+    plt.xlabel('Iterations')
+    plt.plot(stats['validation_loss'][:1000], 'g-', label='Validation Loss')
+    plt.plot(stats['training_loss'][:1000], 'b-', label='Training Loss')
+    plt.legend()
     plt.show()
 
 class Parameters:
@@ -168,4 +186,4 @@ print(test_count)
 # Visualize results
 print("")
 print("Visualizing...")
-visualize(Parameters.coordinates, Parameters.classes, model)
+visualize(Parameters.coordinates, Parameters.classes, stats)
