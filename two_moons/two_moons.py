@@ -79,12 +79,12 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         # Update model
         model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
 
-        if print_loss and ((i % 1000 == 0) or (i == 0)):
+        if print_loss and i % 100 == 0:
             print("Loss after iteration %i: %f" %(i, calculate_error(model, X, y)))
-            print("Validating...")
-            validation_results = predict(model, Parameters.coordinates[100:140,:])
-            validation_count = count_mismatches(validation_results, Parameters.classes[100:140])
-            print(validation_count)
+            # print("Validating...")
+            # validation_results = predict(model, Parameters.coordinates[100:140,:])
+            # validation_count = count_mismatches(validation_results, Parameters.classes[100:140])
+            # print(validation_count)
 
     return model
 
@@ -135,7 +135,7 @@ class Parameters:
     output_layer_dimension = 2
 
     # Hyperparameters
-    learning_rate = 0.01
+    learning_rate = 0.02
     regularization_strength = 0.01
 
 
@@ -143,7 +143,7 @@ class Parameters:
 print("Training model...")
 model = train_neural_network(
     Parameters.coordinates[:100,:],
-    Parameters.classes[:100], 3, print_loss=True)
+    Parameters.classes[:100], 3, epochs=20000, print_loss=True)
 
 # Test the model
 print("")
