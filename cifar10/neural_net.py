@@ -35,7 +35,7 @@ class TwoLayerNeuralNet(object):
         # Backpropagation
         delta3 = probs
         delta3[range(number_of_examples), y] -= 1
-        delta3 /= number_of_examples # ?
+        delta3 /= number_of_examples
 
         dW2 = (a1.T).dot(delta3)
         db2 = np.sum(delta3, axis=0, keepdims=True)
@@ -94,11 +94,8 @@ class TwoLayerNeuralNet(object):
                 result['best_validation_loss'] = validation_loss
                 result['best_iterations'] = i
 
-            # Every epoch check training and validation accuracy and decay learning rate
+            # Every epoch decay learning rate
             if i % iterations_per_epoch == 0:
-                # Check accuracy
-                # training_accuracy = (self.predict(X_batch) == y_batch).mean()
-                # training_history.append(training_accuracy)
                 # Decay learning rate
                 learning_rate *= learning_rate_decay
 

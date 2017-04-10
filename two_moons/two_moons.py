@@ -59,6 +59,8 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         z1 = X.dot(W1) + b1
         a1 = np.tanh(z1)
         scores = a1.dot(W2) + b2
+
+        # Compute the class probabilities
         exp_scores = np.exp(scores)
         probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
