@@ -144,7 +144,7 @@ class Parameters:
 
 
 # Train the model
-print("Training model...")
+print("Training model with 2000 iterations...")
 stats = train_neural_network(
     Parameters.coordinates[:100,:],
     Parameters.classes[:100], 3, epochs=2000, print_loss=True)
