@@ -8,33 +8,35 @@ class TwoLayersNeuralNet():
         self.b1 = np.zeros((1, number_of_nodes))
         self.W2 = np.random.randn(number_of_nodes, output_layer_dimension) / np.sqrt(number_of_nodes)
         self.b2 = np.zeros((1, output_layer_dimension))
-        self.loss = []
+        self.train_loss = []
+        self.valid_loss = []
+        self.test_loss = []
 
     # This function learns parameters for the neural network and returns the model.
     # - X: input data
     # - y: output target
     # - epochs: Number of passes through the training data for gradient descent
-    def train(self, X, y, epochs, learning_rate=0.000000001, regularization_strength=0.01):
-        mean = (np.amax(y) - np.amin(y))/2
-        self.min_value = np.amin(y)
-        self.max_value = np.amax(y)
+    def train(self, X_train, y_train, X_val, y_val, X_test, y_test, epochs, learning_rate=0.0000000001, regularization_strength=0.01):
+        mean = (np.amax(y_train) - np.amin(y_train))/2
+        self.min_value = np.amin(y_train)
+        self.max_value = np.amax(y_train)
         normFunction = np.vectorize(self.normalize)
 
         # Gradient descent. For each batch...
         for i in range(0, epochs):
             # Forwardpropagation
-            z1 = X.dot(self.W1) + self.b1
+            z1 = X_train.dot(self.W1) + self.b1
             a1 = np.tanh(z1)
             a1_norm = normFunction(a1, self.min_value, self.max_value)
             z2 = a1_norm.dot(self.W2) + self.b2
             output = np.around(z2)
 
             # Backpropagation
-            delta3 = output - y
+            delta3 = output - y_train
             dW2 = (a1.T).dot(delta3)
             db2 = np.sum(delta3, axis=0, keepdims=True)
             delta2 = delta3.dot(self.W2.T) * (1 - np.power(a1, 2)) * mean # Derivative of "tanh"
-            dW1 = np.dot(X.T, delta2)
+            dW1 = np.dot(X_train.T, delta2)
             db1 = np.sum(delta2, axis=0)
 
             # Add regularization terms
@@ -46,15 +48,24 @@ class TwoLayersNeuralNet():
             self.b1 += -learning_rate *db1
             self.W2 += -learning_rate *dW2
             self.b2 += -learning_rate *db2
-            loss = self.calculate_error(output, y)
-            self.loss.append(loss)
-            print("RMSError after iteration %i: %f" %(i, loss))
+            train_error = self.calculate_error(output, y_train)
+            self.train_loss.append(train_error)
+            if len(X_val) > 0:
+                valid_error = self.calculate_error(self.predict(X_val), y_val)
+                self.valid_loss.append(valid_error)
+            else:
+                valid_error = 0
+            if len(X_test) > 0:
+                test_error = self.calculate_error(self.predict(X_test), y_test)
+                self.test_loss.append(test_error)
+            else:
+                test_error = 0
+            print("RMSError after iteration %i: %f | Valid Loss: %f | Test Loss: %f" %(i, train_error, valid_error, test_error))
 
     def mean_squared_error(self, predicted, actual):
         return np.average((actual - predicted) ** 2, axis=0)
 
-    def calculate_error(self, X, y):
-        output = X
+    def calculate_error(self, output, y):
         num_examples = output.shape[0]
         output = np.nan_to_num(output)
         y = np.nan_to_num(y)
