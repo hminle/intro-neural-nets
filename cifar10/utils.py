@@ -1,6 +1,8 @@
 import os
 import pickle
 import numpy as np
+import matplotlib.pyplot as plt
+from collections import Counter
 
 def unpickle(file):
     with open(file, 'rb') as fo:
@@ -58,3 +60,21 @@ def count_matches(predicted_labels, actual_labels):
             matches['correct_%i' %(predicted_labels[i])] += 1
 
     return matches
+
+def get_class_accuracies(predicted, actual):
+    accuracies = []
+    counter = Counter(actual)
+    matches = count_matches(predicted, actual)
+    for i in range(10):
+        class_accuracy = matches['correct_%i' %(i)] / counter[i]
+        accuracies.append(class_accuracy)
+    return accuracies
+
+def plot_loss(stats):
+    plt.title('Loss History')
+    plt.ylabel('Loss')
+    plt.xlabel('Iterations')
+    plt.plot(stats['validation_loss_history'][:1000], 'g-', label='Validation Loss')
+    plt.plot(stats['loss_history'][:1000], 'b-', label='Training Loss')
+    plt.legend()
+    plt.show()
