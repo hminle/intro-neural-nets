@@ -11,7 +11,6 @@ def load_image_batch(filename):
     data = unpickle(filename)
     records = data['data']
     records = records.astype("float")
-    # records = records.reshape(10000, 3, 32, 32).transpose(0,2,3,1).astype("float")
     return records, data['labels']
 
 def load_images():
@@ -48,3 +47,14 @@ def read_and_prepare_images(training_records=49000, validation_records=1000, tes
     testing_data -= mean_image
 
     return training_data, training_labels, validation_data, validation_labels, testing_data, testing_labels
+
+def count_matches(predicted_labels, actual_labels):
+    matches = {}
+    for i in range(10):
+        matches['correct_%i' %(i)] = 0
+
+    for i in range(0, len(predicted_labels)):
+        if predicted_labels[i] == actual_labels[i]:
+            matches['correct_%i' %(predicted_labels[i])] += 1
+
+    return matches

@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+np.random.seed(0)
+
 class TwoLayerNeuralNet(object):
     def __init__(self, number_of_inputs, number_of_hidden, number_of_outputs):
         self.model = {}
@@ -59,9 +61,11 @@ class TwoLayerNeuralNet(object):
         iterations_per_epoch = max(number_of_examples / batch_size, 1)
 
         # Use Stochastic Gradient Descent to optimize self.model
-        loss_history = []
-        training_history = []
-        validation_history = []
+        result = {
+            'loss_history': [], 'validation_loss_history': [],
+            'best_model': {}, 'best_validation_loss': 1000, 'best_iterations': 0
+        }
+
 
         for i in range(iterations):
             # Get a random batch
@@ -71,7 +75,9 @@ class TwoLayerNeuralNet(object):
 
             # Get the loss and gradients for the current batch
             loss, gradients = self.calculate_loss_and_gradients(X_batch, y_batch, regularization_strength)
-            loss_history.append(loss)
+            validation_loss, _ = self.calculate_loss_and_gradients(X_val, y_val, regularization_strength)
+            result['loss_history'].append(loss)
+            result['validation_loss_history'].append(validation_loss)
 
             # Update model
             self.model['W1'] += -learning_rate * gradients['W1']
@@ -80,23 +86,23 @@ class TwoLayerNeuralNet(object):
             self.model['b2'] += -learning_rate * gradients['b2']
 
             if print_loss and i % 100 == 0:
-                print("Loss after iteration %i / %i: loss %f" % (i, iterations, loss))
+                print("Loss after iteration %i / %i: loss %f. Validation loss: %f" % (i, iterations, loss, validation_loss))
+
+            # Update the best model if necessary
+            if validation_loss < result['best_validation_loss']:
+                result['best_model'] = self.model
+                result['best_validation_loss'] = validation_loss
+                result['best_iterations'] = i
 
             # Every epoch check training and validation accuracy and decay learning rate
             if i % iterations_per_epoch == 0:
                 # Check accuracy
-                training_accuracy = (self.predict(X_batch) == y_batch).mean()
-                validation_accuracy = (self.predict(X_val) == y_val).mean()
-                training_history.append(training_accuracy)
-                validation_history.append(validation_accuracy)
+                # training_accuracy = (self.predict(X_batch) == y_batch).mean()
+                # training_history.append(training_accuracy)
                 # Decay learning rate
                 learning_rate *= learning_rate_decay
 
-        return {
-          'loss_history': loss_history,
-          'training_history': training_history,
-          'validation_history': validation_history
-        }
+        return result
 
     # Predict an output based on current model
     def predict(self, X):
