@@ -127,22 +127,6 @@ def plot_decision_boundary(pred_func, X, y):
     plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Spectral)
     plt.show()
 
-def main():
-    print("Training model...")
-    model = train_neural_network(
-        Parameters.coordinates[:100,:],
-        Parameters.classes[:100], 3, print_loss=True)
-
-    print("")
-    print("Testing...")
-    test_results = predict(model, Parameters.coordinates[140:,:])
-    test_count = count_mismatches(test_results, Parameters.classes[140:])
-    print(test_count)
-
-    print("")
-    print("Visualizing...")
-    visualize(Parameters.coordinates, Parameters.classes, model)
-
 class Parameters:
     coordinates, classes = read_dataset()
     number_of_examples = int(len(coordinates) * 0.5)
@@ -154,5 +138,21 @@ class Parameters:
     learning_rate = 0.01
     regularization_strength = 0.01
 
-if __name__ == "__main__":
-    main()
+
+# Train the model
+print("Training model...")
+model = train_neural_network(
+    Parameters.coordinates[:100,:],
+    Parameters.classes[:100], 3, print_loss=True)
+
+# Test the model
+print("")
+print("Testing...")
+test_results = predict(model, Parameters.coordinates[140:,:])
+test_count = count_mismatches(test_results, Parameters.classes[140:])
+print(test_count)
+
+# Visualize results
+print("")
+print("Visualizing...")
+visualize(Parameters.coordinates, Parameters.classes, model)
