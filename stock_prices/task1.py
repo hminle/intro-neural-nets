@@ -42,6 +42,8 @@ prices = np.vectorize(lambda price: re.sub(',', '', price))(data.Price.values)
 prices = prices.reshape(prices.shape[0], 1)
 prices = prices.astype('float32')
 
+## Shuffle Data
+#np.random.shuffle(prices)
 
 # prepare the dataset of input to output pairs encoded as integers
 
@@ -54,7 +56,7 @@ def read_and_prepare_data(train_percent, validation_percent, test_percent, data)
     train_data = data[mask]
     
     if validation_records > 0:
-        mask = range(training_records, train_records + validation_records)
+        mask = range(train_records, train_records + validation_records)
         validation_data = data[mask]
     else:
         validation_data = []
@@ -96,10 +98,14 @@ y_test = np.reshape(y_test, (len(y_test), 1))
 
 ## Build Model
 
-model = TwoLayersNeuralNet(N, 1, 5)
+model = TwoLayersNeuralNet(N, 1, 5, jump_connection=jump_connection)
 
 model.train(X_train ,y_train, X_val, y_val, X_test, y_test, 50, learning_rate=0.000000001)
 
+print("Time to reach best performance in seconds " + str(model.time_to_reach_best_performance))
+print("Best Loss " + str(model.best_performance))
+
+# Show RMSE
 figure1 = plt.figure(1)
 plt.plot(model.train_loss, 'b-', label='Train Loss')
 plt.plot(model.valid_loss, 'g-', label='Valid Loss')
@@ -110,6 +116,7 @@ plt.title('Loss history')
 plt.legend()
 figure1.show()
 
+# Show Pred data vs real data in test set
 if len(X_test) > 0: 
     figure2 = plt.figure(2)
     plt.plot(model.predict(X_test), 'b-', label="Predicted Data")
@@ -120,6 +127,7 @@ if len(X_test) > 0:
     plt.legend()
     figure2.show()
 
+# Show Pred data vs real data in train set
 figure3 = plt.figure(3)
 plt.plot(model.predict(X_train), 'b-', label="Predicted Data")
 plt.plot(y_train, 'r-', label="Real Data")
@@ -128,6 +136,23 @@ plt.ylabel('Price')
 plt.title('Predicted Data vs Real Data in Train Data')
 plt.legend()
 figure3.show()
+## Show Extrapolate Data
+#y_con = model.predict(X_train[-1])
+#for i in range(249,277):
+#    y_pred = model.predict(np.reshape(y_con[-1], (1,)))
+#    y_con = np.concatenate((y_con, y_pred ), axis=0)
+#
 
+#y_con = np.concatenate((y_train, y_con), axis=0)
+#figure4 = plt.figure(4)
+#plt.plot(model.predict(X_train), 'b-', label="Predicted Data")
+#plt.plot(y_con, 'g-', label="Extrapolate Data")
+#plt.plot(y_train, 'r-', label="Real Data")
+#plt.xlabel('Time')
+#plt.ylabel('Price')
+#plt.title('Extrapolate Data with Train Set')
+#plt.legend()
+#figure4.show()
+#
 
 input()
