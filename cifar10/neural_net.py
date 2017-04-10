@@ -86,9 +86,9 @@ class TwoLayerNeuralNet(object):
             if print_loss and i % 100 == 0:
                 print("Loss after iteration %i / %i: %f" %(i, iterations, error))
 
-            # Every epoch check training and validation accuracy and decay learning rate
+            # Every epoch save training and validation accuracy and decay the learning rate
             if i % iterations_per_epoch == 0:
-                # Check accuracy
+                # Save accuracy
                 training_accuracy = (self.predict(X_batch) == y_batch).mean()
                 validation_accuracy = (self.predict(X_val) == y_val).mean()
                 training_history.append(training_accuracy)
