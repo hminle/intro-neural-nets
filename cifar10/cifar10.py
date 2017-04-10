@@ -22,7 +22,7 @@ print("")
 print("Training...")
 stats = net.train(training_data, training_labels, validation_data, validation_labels,
             iterations=1000, batch_size=200,
-            learning_rate=0.000000001, learning_rate_decay=0.95,
+            learning_rate=0.00001, learning_rate_decay=0.95,
             regularization_strength=0.00001, print_loss=True)
 
 # Predict on the validation set
