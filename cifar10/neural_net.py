@@ -32,7 +32,7 @@ class TwoLayerNeuralNet(object):
         num_train = X.shape[0]
         iterations_per_epoch = max(num_train / batch_size, 1)
 
-        # Use Stochastic Gradient Descent to optimize the parameters in self.model
+        # Use Stochastic Gradient Descent to optimize self.model
         loss_history = []
         training_history = []
         validation_history = []
@@ -86,7 +86,7 @@ class TwoLayerNeuralNet(object):
             if print_loss and i % 100 == 0:
                 print("Loss after iteration %i / %i: %f" %(i, iterations, error))
 
-            # Every epoch, check training and validation accuracy and decay learning rate
+            # Every epoch check training and validation accuracy and decay learning rate
             if i % iterations_per_epoch == 0:
                 # Check accuracy
                 training_accuracy = (self.predict(X_batch) == y_batch).mean()
@@ -105,7 +105,6 @@ class TwoLayerNeuralNet(object):
     # Predict an output based on current model
     def predict(self, X):
         W1, b1, W2, b2 = self.model['W1'], self.model['b1'], self.model['W2'], self.model['b2']
-
         # Forward propagation
         z1 = X.dot(W1) + b1
         a1 = np.maximum(0, z1) # Again use ReLU as activation function
