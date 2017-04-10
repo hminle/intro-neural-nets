@@ -28,6 +28,8 @@ args_parser.add_argument('--epochs', default=50,type=int,
         metavar='<Number of iterations>', help='Define num of epochs, default=50')
 args_parser.add_argument('--jump_connection', default=False, type=bool,
         metavar='<jump_connection_flag>', help='Define jump connection or not, default=False')
+args_parser.add_argument('--random_data', default=False, type=bool,
+        metavar='<random_data>', help='Define random data or not, default=False')
 args = args_parser.parse_args()
 ## Prepare data
 N = args.n
@@ -37,13 +39,17 @@ validation_percent = args.validation_percent
 test_percent = args.test_percent
 epochs = args.epochs
 jump_connection = args.jump_connection
+is_random = args.random_data
+
+
 data = pd.read_csv("stock_price.csv", names=["Date", "Price"])
 prices = np.vectorize(lambda price: re.sub(',', '', price))(data.Price.values)
 prices = prices.reshape(prices.shape[0], 1)
 prices = prices.astype('float32')
 
 ## Shuffle Data
-#np.random.shuffle(prices)
+if is_random:
+   np.random.shuffle(prices)
 
 # prepare the dataset of input to output pairs encoded as integers
 
