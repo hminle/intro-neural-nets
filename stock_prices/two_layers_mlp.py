@@ -46,11 +46,11 @@ class TwoLayersNeuralNet():
             self.b1 += -learning_rate *db1
             self.W2 += -learning_rate *dW2
             self.b2 += -learning_rate *db2
-            loss = self.calculate_error(output, y, regularization_strength)
+            loss = self.calculate_error(output, y)
             self.loss.append(loss)
             print("RMSError after iteration %i: %f" %(i, loss))
 
-    def mean_squared_error(predicted, actual):
+    def mean_squared_error(self, predicted, actual):
         return np.average((actual - predicted) ** 2, axis=0)
 
     def calculate_error(self, X, y):
@@ -58,7 +58,7 @@ class TwoLayersNeuralNet():
         num_examples = output.shape[0]
         output = np.nan_to_num(output)
         y = np.nan_to_num(y)
-        data_loss = np.sqrt(1.0 / num_examples * mean_squared_error(output, y))
+        data_loss = np.sqrt(1.0 / num_examples * self.mean_squared_error(output, y))
         return np.log(data_loss)
 
     def normalize(self, x, min_value, max_value):
