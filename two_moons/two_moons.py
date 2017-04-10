@@ -18,6 +18,7 @@ def read_dataset():
 
 def calculate_error(model, X, y):
     W1, b1, W2, b2 = model['W1'], model['b1'], model['W2'], model['b2']
+    number_of_examples = X.shape[0]
 
     # Forward propagation
     z1 = X.dot(W1) + b1
@@ -27,12 +28,12 @@ def calculate_error(model, X, y):
     probs = exp_scores / np.sum(exp_scores, axis=1, keepdims=True)
 
     # Calculate the error
-    correct_logprobs = -np.log(probs[range(Parameters.number_of_examples), y])
+    correct_logprobs = -np.log(probs[range(number_of_examples), y])
     data_loss = np.sum(correct_logprobs)
 
     # Add regularization term
     data_loss += Parameters.regularization_strength / 2 * (np.sum(np.square(W1)) + np.sum(np.square(W2)))
-    return 1.0 / Parameters.number_of_examples * data_loss
+    return 1.0 / number_of_examples * data_loss
 
 # This function learns parameters for the neural network and returns the model.
 # - number_of_nodes: Number of nodes in the hidden layer
@@ -47,6 +48,7 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
     b2 = np.zeros((1, Parameters.output_layer_dimension))
 
     model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
+    result = { 'best_model': model, 'last_validation_loss': 10, 'best_iterations': 0 }
 
     # Gradient descent. For each batch...
     for i in range(0, epochs):
@@ -80,13 +82,15 @@ def train_neural_network(X, y, number_of_nodes, epochs=20000, print_loss=False):
         model = { 'W1': W1, 'b1': b1, 'W2': W2, 'b2': b2 }
 
         if print_loss and i % 100 == 0:
-            print("Loss after iteration %i: %f" %(i, calculate_error(model, X, y)))
-            # print("Validating...")
-            # validation_results = predict(model, Parameters.coordinates[100:140,:])
-            # validation_count = count_mismatches(validation_results, Parameters.classes[100:140])
-            # print(validation_count)
+            loss = calculate_error(model, X, y)
+            validation_loss = calculate_error(model, Parameters.coordinates[100:140,:], Parameters.classes[100:140])
+            print("Loss after iteration %i: %f. Validation loss: %f" %(i, loss, validation_loss))
+            if validation_loss < result['last_validation_loss']:
+                result['best_model'] = model
+                result['last_validation_loss'] = validation_loss
+                result['best_iterations'] = i
 
-    return model
+    return result
 
 # Helper function to predict an output (0 or 1)
 def predict(model, X):
@@ -141,13 +145,22 @@ class Parameters:
 
 # Train the model
 print("Training model...")
-model = train_neural_network(
+stats = train_neural_network(
     Parameters.coordinates[:100,:],
-    Parameters.classes[:100], 3, epochs=20000, print_loss=True)
+    Parameters.classes[:100], 3, epochs=2000, print_loss=True)
+model = stats['best_model']
+
+# Print result for validation
+print("")
+print("Best validation loss at %i iterations!" %(stats['best_iterations']))
+print("Result of validation...")
+validation_results = predict(model, Parameters.coordinates[100:140,:])
+validation_count = count_mismatches(validation_results, Parameters.classes[100:140])
+print(validation_count)
 
 # Test the model
 print("")
-print("Testing...")
+print("Testing with model with best validation loss...")
 test_results = predict(model, Parameters.coordinates[140:,:])
 test_count = count_mismatches(test_results, Parameters.classes[140:])
 print(test_count)
