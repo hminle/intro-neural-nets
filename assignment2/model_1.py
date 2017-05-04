@@ -33,7 +33,7 @@ class SampleArchitecture1(object):
 
         # Dense Layer
         pool2_flat = tf.reshape(pool2, [-1, 8 * 8 * 12]) # Flatten pool2 which has these dimensions
-        dense = tf.layers.dense(inputs=pool2_flat, units=64, activation=tf.nn.relu)
+        dense = tf.layers.dense(inputs=pool2_flat, units=64)
 
         # Logits Layer
         logits = tf.layers.dense(inputs=dense, units=10)
