@@ -32,8 +32,6 @@ class SampleArchitecture1(object):
         pool2 = tf.layers.average_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2)
 
         # Dense Layer
-        # pool2_flat = tf.reshape(pool2, [-1, 7 * 7 * 64])
-        # dense = tf.layers.dense(inputs=pool2_flat, units=64, activation=tf.nn.relu)
         pool2_flat = tf.reshape(pool2, [-1, 8 * 8 * 12]) # Flatten pool2 which has these dimensions
         dense = tf.layers.dense(inputs=pool2_flat, units=64, activation=tf.nn.relu)
 
