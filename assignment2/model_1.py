@@ -54,7 +54,7 @@ class SampleArchitecture1(object):
                 loss=loss,
                 global_step=tf.contrib.framework.get_global_step(),
                 learning_rate=SampleArchitecture1.learning_rate,
-                optimizer="Adam"
+                optimizer="SGD"
             )
 
         # Generate Predictions

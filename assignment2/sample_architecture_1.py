@@ -8,7 +8,7 @@ from tensorflow.contrib import learn
 tf.logging.set_verbosity(tf.logging.ERROR)
 
 BATCH_SIZE = 200
-STEPS = 2000
+STEPS = 500
 
 # Read input images
 print("Reading input data...")
@@ -20,7 +20,7 @@ print("Building model..")
 
 # Create the Estimator
 cifar10_classifier = learn.Estimator(
-    model_fn=SampleArchitecture1.get_model, model_dir="/tmp/tf/model1adam"
+    model_fn=SampleArchitecture1.get_model, model_dir="/tmp/tf/model1"
 )
 
 # Set up logging for predictions
