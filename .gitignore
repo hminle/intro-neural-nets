@@ -1,5 +1,7 @@
 .pylintrc
 __pycache__/
 
+assignment2/deps/
+
 */images/*
 !*/images/.keep
