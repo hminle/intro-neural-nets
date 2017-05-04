@@ -1,3 +1,5 @@
-cifar10/images/*
-!.keep
+.pylintrc
 __pycache__/
+
+*/images/*
+!*/images/.keep
