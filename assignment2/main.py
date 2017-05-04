@@ -3,12 +3,19 @@
 # 1. Import a model
 # from model_1 import SampleArchitecture1 as model
 
-# 2. Call the trainer with desired architecture
-# from trainer import process
-# process(SampleArchitecture1.get_model, "/tmp/tf/model1", batch_size=200, steps=500)
+# 2. Set parameters (model_dir, batch_size, steps)
+# 3. Execute program with `python3 main.py`
 
 
-from model_2 import SampleArchitecture2 as model
+# Import desired model
+from model_1 import SampleArchitecture1 as used_model
 from trainer import process
 
-process(model.get_model, "/tmp/tf/modelx", batch_size=200, steps=500)
+model = used_model.get_model
+
+# Change these parameters
+model_dir = "/tmp/tf/model"
+batch_size = 200
+steps = 500
+
+process(model, model_dir, batch_size=batch_size, steps=steps)
