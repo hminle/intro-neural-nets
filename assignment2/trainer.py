@@ -4,7 +4,8 @@ from utils import read_and_prepare_images
 import tensorflow as tf
 from tensorflow.contrib import learn
 
-tf.logging.set_verbosity(tf.logging.ERROR)
+# tf.logging.set_verbosity(tf.logging.ERROR)
+tf.logging.set_verbosity(tf.logging.INFO)
 
 DEFAULT_BATCH_SIZE = 200
 DEFAULT_STEPS = 500
@@ -21,10 +22,12 @@ def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_
     # Create the Estimator
     cifar10_classifier = learn.Estimator(model_fn=model, model_dir=model_dir)
 
-    # Set up logging for predictions
-    # Logging is deactivated though because we do not want to see deprecation messages
-    tensors_to_log = { "probabilities": "softmax_tensor" }
-    logging_hook = tf.train.LoggingTensorHook(tensors=tensors_to_log, every_n_iter=50)
+    # Set up logger for validation error
+    # Set up early stopping if validation loss does not decrease for 100 steps
+    validation_monitor = tf.contrib.learn.monitors.ValidationMonitor(
+        validation_data, validation_labels, every_n_steps=50,
+        early_stopping_metric="loss", early_stopping_metric_minimize=True, early_stopping_rounds=100
+    )
 
     print("")
     print("Training model...")
@@ -38,7 +41,7 @@ def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_
     with tf.device(device):
         cifar10_classifier.fit(
             x=training_data, y=training_labels,
-            batch_size=batch_size, steps=steps, monitors=[logging_hook]
+            batch_size=batch_size, steps=steps, monitors=[validation_monitor]
         )
 
     # Configure the accuracy metric for evaluation
