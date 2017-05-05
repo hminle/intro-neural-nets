@@ -9,7 +9,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 DEFAULT_BATCH_SIZE = 200
 DEFAULT_STEPS = 500
 
-def process(model, model_dir="/tmp/model", batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_STEPS):
+def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_STEPS):
     # Read input images
     print("Reading input data...")
     training_data, training_labels, validation_data, validation_labels, test_data, test_labels = read_and_prepare_images()
