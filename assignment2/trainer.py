@@ -9,7 +9,7 @@ tf.logging.set_verbosity(tf.logging.ERROR)
 DEFAULT_BATCH_SIZE = 200
 DEFAULT_STEPS = 500
 
-def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_STEPS):
+def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_STEPS, use_gpu=False):
     # Read input images
     print("Reading input data...")
     training_data, training_labels, validation_data, validation_labels, test_data, test_labels = read_and_prepare_images()
@@ -29,11 +29,17 @@ def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_
     print("")
     print("Training model...")
 
+    # Choose right device
+    device = '/cpu:0'
+    if use_gpu:
+        device = '/gpu:0'
+
     # Train the model
-    cifar10_classifier.fit(
-        x=training_data, y=training_labels,
-        batch_size=batch_size, steps=steps, monitors=[logging_hook]
-    )
+    with tf.device(device):
+        cifar10_classifier.fit(
+            x=training_data, y=training_labels,
+            batch_size=batch_size, steps=steps, monitors=[logging_hook]
+        )
 
     # Configure the accuracy metric for evaluation
     metrics = {
