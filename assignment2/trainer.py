@@ -1,5 +1,5 @@
 import os
-from utils import read_and_prepare_images
+from utils import read_and_prepare_images, get_accuracy_per_class
 
 import tensorflow as tf
 from tensorflow.contrib import learn
@@ -56,3 +56,16 @@ def process(model, model_dir=None, batch_size=DEFAULT_BATCH_SIZE, steps=DEFAULT_
 
     print("")
     print(results)
+
+    print("")
+    print("----------")
+    print("")
+    validation_predicted_labels = list(cifar10_classifier.predict(validation_data))
+    validation_class_accuracy = get_accuracy_per_class(validation_predicted_labels, validation_labels)
+    print("")
+    print("Accuracy per class for validation", validation_class_accuracy)
+
+    test_predicted_labels = list(cifar10_classifier.predict(test_data))
+    test_class_accuracy = get_accuracy_per_class(test_predicted_labels, test_labels)
+    print("")
+    print("Accuracy per class for testing", test_class_accuracy)

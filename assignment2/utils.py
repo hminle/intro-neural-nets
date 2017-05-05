@@ -1,5 +1,6 @@
 import os
 import pickle
+from collections import Counter
 
 import numpy as np
 
@@ -48,3 +49,22 @@ def read_and_prepare_images(training_records=49000, validation_records=1000, tes
     testing_data -= mean_image
 
     return training_data, training_labels, validation_data, validation_labels, testing_data, testing_labels
+
+def get_accuracy_per_class(predicted, actual):
+    accuracies = []
+    counter = Counter(actual)
+    matches = _count_matches(predicted, actual)
+    for i in range(10):
+        class_accuracy = matches['correct_%i' %(i)] / counter[i]
+        class_accuracy = round(class_accuracy, 2)
+        accuracies.append(class_accuracy)
+    return accuracies
+
+def _count_matches(predicted_labels, actual_labels):
+    matches = {}
+    for i in range(10):
+        matches['correct_%i' %(i)] = 0
+    for i in range(0, len(predicted_labels)):
+        if predicted_labels[i]['classes'] == actual_labels[i]:
+            matches['correct_%i' %(predicted_labels[i]['classes'])] += 1
+    return matches
