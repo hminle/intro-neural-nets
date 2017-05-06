@@ -38,7 +38,7 @@ class SampleArchitecture4(object):
         pool2 = tf.layers.max_pooling2d(norm2, pool_size=[3, 3], strides=2, padding="same")
 
         # Dense Layer #1 with 384 neurons
-        pool2_flat = tf.reshape(pool2, [-1, 16 * 16 * 64]) # Flatten pool2 which has these dimensions
+        pool2_flat = tf.reshape(pool2, [-1, 8 * 8 * 64]) # Flatten pool2 which has these dimensions
         dense1 = tf.layers.dense(
             inputs=pool2_flat, units=384, activation=tf.nn.relu,
             kernel_initializer=tf.constant_initializer(0.1)
@@ -73,7 +73,7 @@ class SampleArchitecture4(object):
         # Generate Predictions
         predictions = {
             "classes": tf.argmax(input=logits, axis=1),
-            "probabilities": tf.nn.softmax(input=logits, name="softmax_tensor")
+            "probabilities": tf.nn.softmax(logits, name="softmax_tensor")
         }
 
         # Return a ModelFnOps object
