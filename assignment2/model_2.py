@@ -6,7 +6,7 @@ class SampleArchitecture2(object):
     height = 32
     width = 32
     channels = 3
-    learning_rate = 0.01
+    learning_rate = 0.001
 
     @classmethod
     def get_model(cls, features, labels, mode):
@@ -36,10 +36,11 @@ class SampleArchitecture2(object):
             inputs=pool2, filters=64, kernel_size=[5, 5],
             padding="same", activation=tf.nn.relu
         )
+        pool3 = tf.layers.max_pooling2d(inputs=conv3, pool_size=[2, 2], strides=2)
 
         # Dense Layer
-        conv3_flat = tf.reshape(conv3, [-1, 8 * 8 * 64]) # Flatten conv3 which has these dimensions
-        dense = tf.layers.dense(inputs=conv3_flat, units=64)
+        pool3_flat = tf.reshape(pool3, [-1, 4 * 4 * 64]) # Flatten pool3 which has these dimensions
+        dense = tf.layers.dense(inputs=pool3_flat, units=64)
 
         # Logits Layer
         logits = tf.layers.dense(inputs=dense, units=10)
