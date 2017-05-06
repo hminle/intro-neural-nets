@@ -30,7 +30,7 @@ class SampleArchitecture4(object):
 
         # Convolutional Layer #2 and Normalization Layer #2 and Pooling Layer #2
         conv2 = tf.layers.conv2d(
-            inputs=input_layer, filters=64, kernel_size=[5, 5],
+            inputs=norm1, filters=64, kernel_size=[5, 5],
             padding="same", activation=tf.nn.relu,
             kernel_initializer=tf.truncated_normal_initializer(stddev=5e-2)
         )
