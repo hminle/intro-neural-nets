@@ -6,11 +6,11 @@
 # 2. Set parameters (model_dir, batch_size, steps)
 # 3. Execute program with `python3 main.py`
 
-# import os
-# import sys
-#
-# pwd = os.path.dirname(os.path.abspath(__file__))
-# sys.path.insert(0, pwd + "/deps")
+import os
+import sys
+
+pwd = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, pwd + "/deps")
 
 # Import desired model
 from model_1 import SampleArchitecture1 as used_model
