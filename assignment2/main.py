@@ -30,4 +30,4 @@ steps = 500
 process(model, model_dir, batch_size=batch_size, steps=steps, use_gpu=use_gpu)
 
 end_time = time.time()
-print(f"--- {end_time - start_time} seconds ---")
+print("---", end_time - start_time, "seconds ---")
