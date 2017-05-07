@@ -25,7 +25,7 @@ model = used_model.get_model
 model_dir = "/tmp/tf/model"
 use_gpu = False
 batch_size = 200
-steps = 500
+steps = 10000
 
 process(model, model_dir, batch_size=batch_size, steps=steps, use_gpu=use_gpu)
 
