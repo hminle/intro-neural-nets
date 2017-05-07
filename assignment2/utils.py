@@ -68,3 +68,24 @@ def _count_matches(predicted_labels, actual_labels):
         if predicted_labels[i]['classes'] == actual_labels[i]:
             matches['correct_%i' %(predicted_labels[i]['classes'])] += 1
     return matches
+
+def get_top3_per_class(probabilities_array, actual_labels):
+    top3_accuracies = []
+    counter = Counter(actual_labels)
+    matches = _count_matches_within_top_3(probabilities_array, actual_labels)
+    for i in range(10):
+        top3_accuracy = matches['correct_%i' %(i)] / counter[i]
+        top3_accuracy = round(top3_accuracy, 2)
+        top3_accuracies.append(top3_accuracy)
+    return top3_accuracies
+
+def _count_matches_within_top_3(probabilities_array, actual_labels):
+    matches = {}
+    for i in range(10):
+        matches['correct_%i' %(i)] = 0
+    for i in range(0, len(probabilities_array)):
+        current_probabilites = probabilities_array[i]['probabilities']
+        top_3 = np.argpartition(current_probabilites, -3)[-3:]
+        if actual_labels[i] in top_3:
+            matches['correct_%i' %(actual_labels[i])] += 1
+    return matches
