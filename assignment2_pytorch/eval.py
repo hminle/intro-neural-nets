@@ -26,8 +26,6 @@ parser.add_argument('--draw_confusion', '-d', action='store_true', help='draw co
 args = parser.parse_args()
 
 use_cuda = torch.cuda.is_available()
-best_acc = 0  # best test accuracy
-start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
 # Data
 print('==> Preparing data..')
@@ -53,9 +51,6 @@ checkpoint_dir = 'checkpoint'
 assert os.path.isdir(checkpoint_dir), 'Error: no checkpoint directory found!'
 checkpoint = torch.load(args.checkpoint, map_location=lambda storage, loc: storage)
 net = checkpoint['net']
-best_acc = checkpoint['acc']
-start_epoch = checkpoint['epoch']
-print('==> After training %.1f get Best Acc: %.3f' % (start_epoch, best_acc))
 
 if use_cuda:
     net.cuda()
@@ -96,7 +91,7 @@ def eval(testloader, model):
 y_true, y_pred, probabilities = eval(testloader, net)
 print('Accuracy per class')
 print(get_accuracy_per_class(get_list_predicted_data(y_pred, probabilities), y_true))
-print('Top3 per class')
+print('Top3 Accuracy per class')
 print(get_top3_per_class(get_list_predicted_data(y_pred, probabilities), y_true))
 if args.draw_confusion:
    draw_confusion_matrix(y_true, y_pred, classes)

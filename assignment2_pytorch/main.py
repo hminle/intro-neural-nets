@@ -65,8 +65,8 @@ else:
         net = ResNet_pretrained("resnet101", 10)
         optimizer = optim.SGD(net.classifier.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     else:	
-        #net = ResNet18()
-        net = ResNet50()
+        net = resnet18()
+        #net = ResNet50()
         optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 
 if use_cuda:
