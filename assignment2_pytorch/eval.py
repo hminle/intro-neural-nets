@@ -47,8 +47,6 @@ classes = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship'
 # Model
 # Load checkpoint.
 print('==> Load checkpoint..')
-checkpoint_dir = 'checkpoint'
-assert os.path.isdir(checkpoint_dir), 'Error: no checkpoint directory found!'
 checkpoint = torch.load(args.checkpoint, map_location=lambda storage, loc: storage)
 net = checkpoint['net']
 
