@@ -57,7 +57,7 @@ if use_cuda:
 
 criterion = nn.CrossEntropyLoss()
 
-def eval(testloader, model):
+def eval(testloader, model, criterion):
     print('Start evaluating')
     model.eval()
     test_loss = 0
@@ -86,7 +86,7 @@ def eval(testloader, model):
             % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
     return y_true, y_pred, probabilities
 
-y_true, y_pred, probabilities = eval(testloader, net)
+y_true, y_pred, probabilities = eval(testloader, net, criterion)
 print('Accuracy per class')
 print(get_accuracy_per_class(get_list_predicted_data(y_pred, probabilities), y_true))
 print('Top3 Accuracy per class')

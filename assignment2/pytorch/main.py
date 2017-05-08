@@ -88,7 +88,7 @@ def lr_scheduler(optimizer, epoch, init_lr=args.lr, lr_decay_epoch=10):
     return optimizer
 
 # Training
-def train(epoch, optimizer):
+def train(epoch, net, optimizer, criterion):
     print('\nEpoch: %d' % epoch)
     net.train()
     train_loss = 0
@@ -112,7 +112,7 @@ def train(epoch, optimizer):
         print('Loss: %.3f | Acc: %.3f%% | (Correct/Total): (%d/%d)'
             % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
 
-def test(epoch):
+def test(epoch, net, criterion):
     global best_acc
     net.eval()
     test_loss = 0
@@ -150,5 +150,5 @@ def test(epoch):
 
 for epoch in range(start_epoch, start_epoch+args.epochs):
     optimizer = lr_scheduler(optimizer, epoch, lr_decay_epoch=args.lr_decay_epoch)	
-    train(epoch, optimizer)
-    test(epoch)
+    train(epoch, net, optimizer, criterion)
+    test(epoch, net, criterion)
