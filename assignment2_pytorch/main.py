@@ -14,7 +14,6 @@ import os
 import argparse
 
 from models import *
-from utils import progress_bar
 from torch.autograd import Variable
 
 
@@ -111,7 +110,7 @@ def train(epoch, optimizer):
         total += targets.size(0)
         correct += predicted.eq(targets.data).cpu().sum()
 
-        progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+        print('Loss: %.3f | Acc: %.3f%% | (Correct/Total): (%d/%d)'
             % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
 
 def test(epoch):
@@ -132,7 +131,7 @@ def test(epoch):
         total += targets.size(0)
         correct += predicted.eq(targets.data).cpu().sum()
 
-        progress_bar(batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+        print('Loss: %.3f | Acc: %.3f%% | (Correct/Total): (%d/%d)'
             % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
 
     # Save checkpoint.
