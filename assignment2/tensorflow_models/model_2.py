@@ -6,7 +6,7 @@ class SampleArchitecture2(object):
     height = 32
     width = 32
     channels = 3
-    learning_rate = 0.001
+    learning_rate = 0.002
 
     @classmethod
     def get_model(cls, features, labels, mode):

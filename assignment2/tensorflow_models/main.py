@@ -10,7 +10,7 @@ import os
 import sys
 
 pwd = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, pwd + "/deps")
+sys.path.insert(0, pwd + "../deps")
 
 # Import desired model
 from model_1 import SampleArchitecture1 as used_model
