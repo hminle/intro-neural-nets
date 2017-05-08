@@ -8,14 +8,21 @@ usage: main.py [-h] [--lr LR] [--resume] [--epochs EPOCHS]
 PyTorch CIFAR10 Training
 
 optional arguments:
+
   -h, --help            show this help message and exit
+
   --lr LR               learning rate
+
   --resume, -r          resume from checkpoint
+
   --epochs EPOCHS, -e EPOCHS
                         num of epochs
+
   --batch_size BATCH_SIZE, -b BATCH_SIZE
                         batch size
+
   --pretrained, -p      using pretrained model
+
   --lr_decay_epoch LR_DECAY_EPOCH
                         Specify the epoch when lr will be decayed
 
@@ -35,11 +42,15 @@ usage: eval.py [-h] [--batch_size BATCH_SIZE] --checkpoint CHECKPOINT
 PyTorch CIFAR10 Training
 
 optional arguments:
+
   -h, --help            show this help message and exit
+
   --batch_size BATCH_SIZE, -b BATCH_SIZE
                         batch size
+
   --checkpoint CHECKPOINT, -c CHECKPOINT
                         checkpoint file path
+
   --draw_confusion, -d  draw confusion matrix
 
 **Example**:
