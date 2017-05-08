@@ -1,6 +1,10 @@
 import os
+import sys
 import pickle
 from collections import Counter
+
+pwd = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, pwd + "../deps")
 
 import numpy as np
 

@@ -1,3 +1,9 @@
+import os
+import sys
+
+pwd = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, pwd + "../deps")
+
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -19,7 +25,7 @@ def draw_confusion_matrix(y_true, y_pred, classes):
     hm = sns.heatmap(c, cbar=False, annot=True, fmt='g')
     plt.xticks(np.array(range(10)), classes, rotation=45)
     plt.yticks(np.array(range(10)), classes[::-1], rotation=30)
-    
+
     plt.xlabel('Predicted Labels')
     plt.ylabel('True Labels')
     #plt.show()
