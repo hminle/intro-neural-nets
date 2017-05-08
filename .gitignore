@@ -3,5 +3,5 @@ __pycache__/
 
 assignment2/deps/
 
-*/images/*
-!*/images/.keep
+*/tensorflow_models/images/*
+!*/tensorflow_models/images/.keep
