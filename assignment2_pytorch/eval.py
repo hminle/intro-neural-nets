@@ -89,7 +89,7 @@ def eval(testloader, model):
         total += targets.size(0)
         correct += predicted.eq(targets.data).cpu().sum()
 
-    print('Loss: %.3f | Acc: %.3f%% (%d/%d)'
+    print('Loss: %.3f | Acc: %.3f%% | (Correct/Total): (%d/%d)'
             % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
     return y_true, y_pred, probabilities
 
