@@ -5,3 +5,5 @@ assignment2/deps/
 
 */tensorflow_models/images/*
 !*/tensorflow_models/images/.keep
+
+*.ibe
