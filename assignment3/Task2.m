@@ -1,7 +1,8 @@
 cities = [0.2 0.1; 0.15 0.2; 0.4 0.45; 0.2 0.77; 0.5 0.9; 0.83 0.65;
             0.7 0.5; 0.82 0.35; 0.65 0.23; 0.6 0.28];
-
-number_of_neurons = size(cities, 1);
+number_of_cities = size(cities, 1);
+        
+number_of_neurons = number_of_cities;
 neurons = rand(number_of_neurons, 2);
 
 EPOCHS = 50000;
@@ -17,7 +18,7 @@ for iteration = 1:EPOCHS
     % Plot the cities and neurons
     plot(cities(:,1), cities(:,2), 'r.', neurons(:,1), neurons(:,2), '-b.', 'markersize', 16);
     hold on;
-    plot([neurons(10, 1), neurons(1, 1)], [neurons(10, 2), neurons(1, 2)], '-b.', 'markersize', 16);
+    plot([neurons(number_of_neurons, 1), neurons(1, 1)], [neurons(number_of_neurons, 2), neurons(1, 2)], '-b.', 'markersize', 16);
     hold off;
     axis([0 1 0 1])
     pause(.001)
@@ -31,7 +32,7 @@ for iteration = 1:EPOCHS
 
     % Update weights of current neuron (and neighboorhood)
     for j = round(index-current_neighbourhood_radius):round(index+current_neighbourhood_radius)
-        if j < 1 || j > 10
+        if j < 1 || j > number_of_cities
             continue
         end
         
