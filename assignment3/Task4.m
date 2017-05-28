@@ -26,7 +26,7 @@ for iteration = 1:EPOCHS
     if iteration == 0 || mod(iteration, 10) == 0
         disp(['Iteration: ', num2str(iteration)]);
         
-        % Plot the cities and neurons
+        % Plot the corners, data points and neurons
         plot(corners(:, 1), corners(:, 2), '-b.', data_points(:, 1), data_points(:, 2), 'b.', neurons(:, 1), neurons(:, 2), '-r.', 'markersize', 16);
         hold on;
         plot([corners(number_of_corners, 1), corners(1, 1)], [corners(number_of_corners, 2), corners(1, 2)], '-b.');
