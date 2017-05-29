@@ -5,8 +5,8 @@ number_of_cities = size(cities, 1);
 number_of_neurons = number_of_cities;
 neurons = rand(number_of_neurons, 2);
 
-EPOCHS = 50000;
-LEARNING_RATE = 0.1;
+EPOCHS = number_of_cities * 100;
+LEARNING_RATE = 0.75;
 NEIGHBOURHOOD_RADIUS = number_of_neurons / 2;
 
 
@@ -15,14 +15,18 @@ current_neighbourhood_radius = NEIGHBOURHOOD_RADIUS;
 
 
 for iteration = 1:EPOCHS
-    % Plot the cities and neurons
-    plot(cities(:,1), cities(:,2), 'r.', neurons(:,1), neurons(:,2), '-b.', 'markersize', 16);
-    hold on;
-    plot([neurons(number_of_neurons, 1), neurons(1, 1)], [neurons(number_of_neurons, 2), neurons(1, 2)], '-b.', 'markersize', 16);
-    hold off;
-    axis([0 1 0 1])
-    pause(.001)
-    title('SOM TSP')
+    if iteration == 0 || mod(iteration, 10) == 0
+        disp(['Iteration: ', num2str(iteration)]);
+              
+        % Plot the cities and neurons
+        plot(cities(:,1), cities(:,2), 'r.', neurons(:,1), neurons(:,2), '-b.', 'markersize', 16);
+        hold on;
+        plot([neurons(number_of_neurons, 1), neurons(1, 1)], [neurons(number_of_neurons, 2), neurons(1, 2)], '-b.', 'markersize', 16);
+        hold off;
+        axis([0 1 0 1])
+        pause(.001)
+        title('SOM TSP')
+    end
     
     % Choose random input
     [current_city, id] = datasample(cities, 1);
