@@ -7,3 +7,4 @@ assignment2/deps/
 !*/tensorflow_models/images/.keep
 
 *.ibe
+*.m~
