@@ -61,18 +61,18 @@ def train(epoch, image_data):
 
 
 if __name__ == '__main__':
-    image = Image.open('./images/tropical_tree.JPG').convert('L')
+    image = Image.open('./images/Lena.jpg').convert('L')
 
     original_image_data = np.asarray(image) / 255
     print("Original Image Size")
     print(original_image_data.shape)
-    plt.imshow(original_image_data, cmap='gray')
-    plt.title('Original Image')
-    plt.savefig('./original_tropical_tree.png')
+    #plt.imshow(original_image_data, cmap='gray')
+    #plt.title('Original Image')
+    #plt.savefig('./original_tropical_tree.png')
     #plt.show()
 
     LEARNING_RATE = 1e-4
-    MASK_SIZE = 8
+    MASK_SIZE = 4 
     EPOCHS = 2000
     NUM_COMPONENTS = 8
 
@@ -113,5 +113,5 @@ if __name__ == '__main__':
     
     plt.imshow(reconstructed_image, cmap='gray')
     plt.title('Reconstructed Image')
-    plt.savefig('reconstructed_tropical_tree.png')
+    plt.savefig('reconstructed_Lena_mask4.png')
     #plt.show()
