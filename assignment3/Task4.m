@@ -10,11 +10,11 @@ data_points = [data_points; rand(100, 2) + [2 1]];
 data_points = [data_points; rand(100, 2) + [2 2]];
 number_of_data_points = size(data_points, 1);
 
-number_of_neurons = 30;
+number_of_neurons = number_of_corners * 3;
 neurons = rand(number_of_neurons, 2) + [1 1];
 
 EPOCHS = number_of_data_points * 10;
-LEARNING_RATE = 0.1;
+LEARNING_RATE = 0.25;
 NEIGHBOURHOOD_RADIUS = number_of_neurons / 2;
 
 
@@ -30,9 +30,8 @@ for iteration = 1:EPOCHS
         plot(corners(:, 1), corners(:, 2), '-b.', data_points(:, 1), data_points(:, 2), 'b.', neurons(:, 1), neurons(:, 2), '-r.', 'markersize', 16);
         hold on;
         plot([corners(number_of_corners, 1), corners(1, 1)], [corners(number_of_corners, 2), corners(1, 2)], '-b.');
-        % plot([neurons(number_of_neurons, 1), neurons(1, 1)], [neurons(number_of_neurons, 2), neurons(1, 2)], '-r.');
         hold off;
-        axis([0 3.5 0 3.5])
+        axis([0 3 0 3])
         pause(.001)
         title('SOM TSP')
     end
@@ -68,5 +67,3 @@ for iteration = 1:EPOCHS
     current_learning_rate = LEARNING_RATE * (1 - iteration / EPOCHS);
     current_neighbourhood_radius = NEIGHBOURHOOD_RADIUS * (1 - iteration / EPOCHS);  
 end
-
-disp('Finito!')
